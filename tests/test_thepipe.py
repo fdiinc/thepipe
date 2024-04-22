@@ -1,8 +1,9 @@
 import argparse
 import base64
-import unittest
 import os
 import sys
+import unittest
+
 sys.path.append('..')
 from thepipe_api import thepipe
 from thepipe_api import core

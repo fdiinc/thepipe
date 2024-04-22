@@ -1,19 +1,23 @@
 import base64
+import glob
+import json
+import mimetypes
+import os
+import re
+import tempfile
+import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
-import re
-from typing import Dict, List, Optional
-import glob
-import os
-import tempfile
+from typing import List, Optional
 from urllib.parse import urlparse
-import zipfile
-from PIL import Image
+
+import dotenv
 import requests
-import json
+from PIL import Image
+
 from .core import Chunk, print_status, SourceTypes, create_chunks_from_messages, API_URL
-import tempfile
-import mimetypes
+
+dotenv.load_dotenv()
 
 FILES_TO_IGNORE = {'package-lock.json', '.gitignore', '.bin', '.pyc', '.pyo', '.exe', '.bat', '.dll', '.obj', '.o', '.a', '.lib', '.so', '.dylib', '.ncb', '.sdf', '.suo', '.pdb', '.idb', '.pyd', '.ipynb_checkpoints', '.npy', '.pth'} # Files to ignore, please feel free to customize!
 CODE_EXTENSIONS = {'.h', '.json', '.js', '.jsx', '.ts', '.tsx',  '.cs', '.java', '.html', '.css', '.ini', '.xml', '.yaml', '.xaml', '.sh'} # Plaintext files that should not be compressed with LLMLingua
@@ -235,9 +239,9 @@ def extract_image(file_path: str, text_only: bool = False) -> Chunk:
 def extract_spreadsheet(file_path: str) -> Chunk:
     import pandas as pd # import only if needed
     if file_path.endswith(".csv"):
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, dtype='unicode')
     elif file_path.endswith(".xls") or file_path.endswith(".xlsx"):
-        df = pd.read_excel(file_path)
+        df = pd.read_excel(file_path, dtype='unicode')
     dict = df.to_dict(orient='records')
     json_dict = json.dumps(dict, indent=4)
     return Chunk(path=file_path, text=json_dict, image=None, source_type=SourceTypes.SPREADSHEET)

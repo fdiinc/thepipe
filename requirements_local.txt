@@ -20,3 +20,5 @@ llmlingua
 PyMuPDF
 pdf2image
 python-magic
+nltk
+scikit-learn

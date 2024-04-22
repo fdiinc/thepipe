@@ -1,10 +1,11 @@
 import json
+import os
 import shutil
 import subprocess
 import tempfile
 from typing import List
-import os
-from .core import Chunk, SourceTypes, print_status, count_tokens
+
+from .core import Chunk, SourceTypes, print_status
 from .thepipe import count_tokens
 
 CTAGS_EXECUTABLE_PATH = "C:\ctags.exe" if os.name == 'nt' else "ctags-universal"
