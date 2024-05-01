@@ -40,8 +40,8 @@ def extract(source: str, match: Optional[str] = None, ignore: Optional[str] = No
 
 def extract(source: str, match: Optional[str] = None, ignore: Optional[str] = None, limit: int = 1e5, verbose: bool = False, ai_extraction: bool = False, text_only: bool = False, local: bool = False) -> Dict:
     chunks = extractor.extract_from_source(source=source, match=match, ignore=ignore, limit=limit, ai_extraction=ai_extraction, text_only=text_only, verbose=verbose, local=local)
-    # if local:
-        # chunks = compressor.compress_chunks(chunks=chunks, verbose=verbose, limit=limit)
+    if local:
+        chunks = compressor.compress_chunks(chunks=chunks, verbose=verbose, limit=limit)
     final_list = core.create_docs_from_chunks(chunks)
     if verbose: print_status(f"Successfully created document ({count_tokens(chunks)} tokens)", status='success')
     return final_list

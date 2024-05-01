@@ -92,14 +92,19 @@ def create_messages_from_chunks(chunks: List[Chunk]) -> List[Dict]:
 def create_docs_from_chunks(chunks: List[Chunk]) -> Dict:
     documents = {}
     for chunk in chunks:
-        if chunk.text:
-            keywords = generate_keywords(chunk.text.strip() + " " + chunk.text.strip())
-            indexStr = str(chunks.index(chunk))
-            documents[str(hash(chunk.path + indexStr))] = Document(page_content=chunk.text.strip(),
-                                      metadata={"source": chunk.path.strip(),
-                                                "keywords": ",".join(keywords),
-                                                "section": indexStr},
-                                      source_type=chunk.source_type)
+        try:
+            if chunk.text:
+                keywords = generate_keywords(chunk.text.strip() + " " + chunk.text.strip())
+                indexStr = str(chunks.index(chunk))
+                newDoc = Document(page_content=chunk.text.strip(),
+                                  metadata={"source": chunk.path.strip(),
+                                            "keywords": ",".join(keywords),
+                                            "section": indexStr},
+                                  source_type=chunk.source_type)
+                documents[str(hash(chunk.path + indexStr))] = newDoc
+        except Exception as e:
+            print(e)
+
     return documents
 
 
